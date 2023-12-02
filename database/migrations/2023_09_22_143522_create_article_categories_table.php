@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('article_id');
             $table->integer('category_id');
-            $table->integer('subcategory_id');
+            $table->integer('subcategory_id')->nullable();
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\jobfolder;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\ArticleCategory;
 use Illuminate\Support\Facades\DB;
 use Vedmant\FeedReader\Facades\FeedReader;
 use App\Models\source;
@@ -39,6 +40,12 @@ class XmlController extends Controller
                 ];
                 // Insert the data into the database
                 DB::table('article_contents')->insert($data);
+
+                ArticleCategory::create([
+                    'article_id' => $Artical->id,
+                    'category_id' => $source->category_id,
+                    'subcategory_id' => $source->subcategory_id,
+                ]);
             }
         }
         return response()->json('suceess', 200);

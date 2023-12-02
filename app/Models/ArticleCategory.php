@@ -9,5 +9,5 @@ class ArticleCategory extends Model
 {
     use HasFactory;
     protected $guarded = [];
-
+ 
 }
