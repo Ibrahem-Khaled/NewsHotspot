@@ -1,6 +1,7 @@
-body{
+body {
     background-color: #3b3b3b;
 }
+
 .topnav {
     background-color: #333;
     overflow: hidden;
@@ -15,6 +16,7 @@ body{
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    transition: .5s;
 }
 
 /* Change the color of links on hover */
@@ -22,6 +24,8 @@ body{
     background-color: gray;
     color: black;
     border-radius: 10px;
+    margin: 3px;
+    transition: .5s;
 }
 
 /* Add a color to the active/current link */
