@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\jobfolder\XmlController;
+use App\Http\Controllers\jobfolder\GetdataFootball;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,3 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('/read', [XmlController::class, 'importXML']);
+
+Route::get('/data', [GetdataFootball::class, 'GetTeamCountryIDs']);
+Route::get('/fix', [GetdataFootball::class, 'GetTeamSchedule']);
