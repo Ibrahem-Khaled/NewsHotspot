@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Http;
 
 class GetdataFootball extends Controller
 {
-    public function GetTeamCountryIDs()
+    public function GetTeamCountryIDs($searchBynameCountrys, $searchBynameTeams)
     {
-        $searchBynameCountry = 'Egypt';
-        $searchBynameTeam = 'Al Ahly';
+        $searchBynameCountry = $searchBynameCountrys ?? 'Egypt';
+        $searchBynameTeam = $searchBynameTeams ?? 'Al Ahly';
+
         $countryApi = 'https://livescore-api.com/api-client/countries/list.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7';
         $responseCountry = Http::get($countryApi);
 
@@ -29,6 +30,7 @@ class GetdataFootball extends Controller
         } else {
             return response()->json(['error' => 'Failed to fetch data from the API'], $responseCountry->status());
         }
+
         $teamApi = "https://livescore-api.com/api-client/teams/list.json?country_id=$id&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&language=ar";
         $responseTeam = Http::get($teamApi);
         $josnResponseTeam = $responseTeam->json();
@@ -49,15 +51,14 @@ class GetdataFootball extends Controller
 
     public function GetTeamSchedule()
     {
-        $dataFootball = new GetdataFootball();
-        $getTeamCountryDs = $dataFootball->GetTeamCountryIDs();
+        $getTeamCountryDs = $this->GetTeamCountryIDs('Egypt', 'Al Ahly');
 
         $teamId = $getTeamCountryDs['teamId'];
         $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
         $responseFixtures = Http::get($teamFIXTURES);
         $jsonResponse = $responseFixtures->json();
         $data = $jsonResponse["data"]['fixtures'];
-        
+
         return response()->json($data);
     }
 
