@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\jobfolder\XmlController;
 use App\Http\Controllers\jobfolder\GetdataFootball;
+use App\Http\Controllers\Api\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,7 @@ Route::get('/read', [XmlController::class, 'importXML']);
 
 Route::get('/data', [GetdataFootball::class, 'GetTeamCountryIDs']);
 Route::get('/fix', [GetdataFootball::class, 'GetTeamSchedule']);
+
+//getSearch
+Route::get('get/search', [SearchController::class, 'index']);
+

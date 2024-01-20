@@ -32,7 +32,7 @@ class XmlController extends Controller
                 // Store the element attributes in an associative array
                 $data = [
                     'article_id' => $Artical->id,
-                    'title' => $item->get_title(),
+                    'title' => $item->get_title() ?? $item->get_author(),
                     'description' => $item->get_description(),
                     'link' => $item->get_link(),
                     'image' => $item->get_permalink(),

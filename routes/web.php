@@ -70,6 +70,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['admin']], function () {
     Route::post('admin/users/{id}', [usersController::class, 'ActiveAdmin'])->name('ActiveAdmin');
 });
 
+
+
+
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
