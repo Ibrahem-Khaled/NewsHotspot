@@ -21,9 +21,7 @@ class SearchController extends Controller
                         ->orWhere('description', 'like', '%' . $search . '%');
                 })
                 ->get();
-
             return response()->json($data);
         }
-
     }
 }

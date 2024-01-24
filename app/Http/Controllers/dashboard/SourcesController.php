@@ -32,9 +32,20 @@ class SourcesController extends Controller
             'language' => 'required',
             'country' => 'required',
         ]);
-        source::create($request->all());
+
+        Source::create([
+            'name' => $request->name,
+            'url' => $request->url,
+            'language' => $request->language,
+            'country' => $request->country,
+            'top_storis' => $request->has('top_storis'),
+            'category_id' => $request->category_id,
+            'main_sources_id' => $request->main_sources_id,
+            'subcategory_id' => $request->subcategory_id,
+        ]);
+
         return redirect()->route('showSources')
-            ->with('success', 'Post created successfully.');
+            ->with('success', 'created successfully.');
     }
     public function editshow($id)
     {
@@ -48,7 +59,6 @@ class SourcesController extends Controller
     }
     public function edit(Request $request, $id)
     {
-
         $channel = source::find($id);
         $request->validate([
             'name' => 'required|max:255',
@@ -56,7 +66,16 @@ class SourcesController extends Controller
             'language' => 'required',
             'country' => 'required',
         ]);
-        $channel->update($request->all());
+        $channel->update([
+            'name' => $request->name,
+            'url' => $request->url,
+            'language' => $request->language,
+            'country' => $request->country,
+            'top_storis' => $request->has('top_storis'),
+            'category_id' => $request->category_id,
+            'main_sources_id' => $request->main_sources_id,
+            'subcategory_id' => $request->subcategory_id,
+        ]);
         return redirect()->route('showSources')
             ->with('success', 'Post created successfully.');
     }

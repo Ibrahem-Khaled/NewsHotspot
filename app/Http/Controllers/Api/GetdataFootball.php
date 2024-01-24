@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\jobfolder;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -49,13 +49,39 @@ class GetdataFootball extends Controller
         ];
     }
 
-    public function GetTeamSchedule()
+    public function GetTeamSchedule(Request $request)
     {
-        $getTeamCountryDs = $this->GetTeamCountryIDs('Egypt', 'Al Ahly');
+
+        $contry = $request->country;
+        $team = $request->team;
+        $getTeamCountryDs = $this->GetTeamCountryIDs($contry, $team);
 
         $teamId = $getTeamCountryDs['teamId'];
         $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
         $responseFixtures = Http::get($teamFIXTURES);
+        $jsonResponse = $responseFixtures->json();
+        $data = $jsonResponse["data"]['fixtures'];
+
+        return response()->json($data);
+    }
+    public function GetTeamDateHistory(Request $request)
+    {
+        $contry = $request->country;
+        $team = $request->team;
+        $getTeamCountryDs = $this->GetTeamCountryIDs($contry, $team);
+
+        $teamId = $getTeamCountryDs['teamId'];
+        $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
+        $rsponeTeamHistory = Http::get($teamFIXTURES);
+        $jsonResponse = $rsponeTeamHistory->json();
+        $data = $jsonResponse["data"]['fixtures'];
+
+        return response()->json($data);
+    }
+    public function GetFlags(Request $request)
+    {
+        $flagsApi = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
+        $responseFixtures = Http::get($flagsApi);
         $jsonResponse = $responseFixtures->json();
         $data = $jsonResponse["data"]['fixtures'];
 

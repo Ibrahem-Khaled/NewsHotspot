@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\jobfolder\XmlController;
-use App\Http\Controllers\jobfolder\GetdataFootball;
+use App\Http\Controllers\Api\GetdataFootball;
 use App\Http\Controllers\Api\SearchController;
 
 /*

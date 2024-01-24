@@ -10,16 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('sources', function (Blueprint $table) {
+        Schema::create('competitions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('url');
-            $table->string('language');
-            $table->string('country');
-            $table->boolean('top_storis')->default(0);
-            $table->integer('category_id');
-            $table->integer('subcategory_id')->nullable();
-            $table->integer('main_sources_id');
+            $table->text('discription');
             $table->timestamps();
         });
     }
@@ -29,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('sources');
+        Schema::dropIfExists('competitions');
     }
 };

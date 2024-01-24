@@ -7,7 +7,25 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
         integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('styles/form.css') }}">
+    <style>
+        .urgent-news {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px;
+        }
 
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            font-weight: bolder;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,6 +44,10 @@
                 required />
             <input type="text" name="country" id="name" value="{{ $channel->country }}" placeholder="country"
                 required />
+            <div class="urgent-news">
+                <input type="checkbox" id="top_storis" name="top_storis" />
+                <label for="top_storis">هل هو خبر عاجل</label>
+            </div>
             <div class="container">
                 <div class="select">
                     <select name="category_id" required>

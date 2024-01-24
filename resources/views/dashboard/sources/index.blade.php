@@ -61,7 +61,7 @@
                             <td>{{ $item->country }}</td>
                             <td>{{ $item->category->name }}</td>
                             <td>{{ $item->subcategory?->name }}</td>
-                            <td>{{ $item->mainsources->name }}</td>
+                            <td>{{ $item->mainsources?->name }}</td>
                             <td><a href="{{ route('showEditepageSources', $item->id) }}">Edit</a></td>
                             <form method="POST" action="{{ route('DeleteSources', $item->id) }}">
                                 @csrf
