@@ -89,6 +89,7 @@ class GetdataFootball extends Controller
         return response()->json($data);
     }
 
+
     public function setup_teams_data(Request $request)
     {
         $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?key=M4cVl7zql51jtexw&secret=JDKMIMeXgyE2dxhZBuVXBvoXBpg4DOBm";
@@ -97,7 +98,8 @@ class GetdataFootball extends Controller
         $data = $jsonResponse["data"][''];
 
         foreach ($data as $team) {
-            $teamData = Teams::find($team->id);
+            // this bugs   
+            $teamData = Teams::where('team_api_id', $team->id)->first();
             if (!$teamData) {
                 Teams::create([
                     '' => ''
@@ -108,7 +110,6 @@ class GetdataFootball extends Controller
                 ]);
             }
         }
-
         return response()->json($data);
     }
 

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('team_api_id');
+            $table->bigInteger('team_api_id')->unique();
             $table->boolean('is_club')->default(1);
             $table->string('name');
             $table->integer('sub_category_id');
