@@ -10,7 +10,7 @@ use Vedmant\FeedReader\Facades\FeedReader;
 use App\Models\source;
 use App\Models\ArticleContent;
 
-class XmlController extends Controller
+class news_collection extends Controller
 {
     public function importXML()
     {

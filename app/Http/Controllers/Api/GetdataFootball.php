@@ -113,5 +113,4 @@ class GetdataFootball extends Controller
         return response()->json($data);
     }
 
-
 }

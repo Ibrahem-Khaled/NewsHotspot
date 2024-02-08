@@ -6,3 +6,4 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 $apiTeams = app(\App\Http\Controllers\Api\GetdataFootball::class);
 $apiTeams->setup_teams_data();
+
