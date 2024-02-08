@@ -89,6 +89,7 @@ class GetdataFootball extends Controller
         return response()->json($data);
     }
 
+    
 
     public function setup_teams_data(Request $request)
     {
