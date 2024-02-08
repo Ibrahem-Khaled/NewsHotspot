@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Teams;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -84,6 +85,29 @@ class GetdataFootball extends Controller
         $responseFixtures = Http::get($flagsApi);
         $jsonResponse = $responseFixtures->json();
         $data = $jsonResponse["data"]['fixtures'];
+
+        return response()->json($data);
+    }
+
+    public function setup_teams_data(Request $request)
+    {
+        $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?key=M4cVl7zql51jtexw&secret=JDKMIMeXgyE2dxhZBuVXBvoXBpg4DOBm";
+        $response = Http::get($teamsApi);
+        $jsonResponse = $response->json();
+        $data = $jsonResponse["data"][''];
+
+        foreach ($data as $team) {
+            $teamData = Teams::find($team->id);
+            if (!$teamData) {
+                Teams::create([
+                    '' => ''
+                ]);
+            } else {
+                $teamData->update([
+                    '' => ''
+                ]);
+            }
+        }
 
         return response()->json($data);
     }
