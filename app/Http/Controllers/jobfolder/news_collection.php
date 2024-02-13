@@ -18,8 +18,38 @@ class news_collection extends Controller
 
         foreach ($sources_arr as $source) {
 
-            if ($source->url == 'https://www.youm7.com/') {
-                
+            if (strpos($source->url, 'https://www.youm7.com/') !== false) {
+
+                $f = FeedReader::read($source->url);
+                $pageSource = $f->getRawContent();
+
+                foreach ($pageSource->get_items(0, $pageSource->get_item_quantity()) as $item) {
+                    // Insert the data into the database
+                    $dataSource = [
+                        'source_id' => $source->id,
+                        'publish_date' => $item->get_date(),
+                    ];
+                    $Artical = Article::create($dataSource);
+
+                    // Store the element attributes in an associative array
+                    $data = [
+                        'article_id' => $Artical->id,
+                        'title' => $item->get_title() ?? $item->get_author(),
+                        'description' => $item->get_description(),
+                        'link' => $item->get_link(),
+                        'image' => $item->get_permalink(),
+                        'video' => $item->get_thumbnail(),
+                    ];
+                    // Insert the data into the database
+                    DB::table('article_contents')->insert($data);
+
+                    ArticleCategory::create([
+                        'article_id' => $Artical->id,
+                        'category_id' => $source->category_id,
+                        'subcategory_id' => $source->subcategory_id,
+                    ]);
+                }
+
             } else {
                 // Define the XML file URL
                 $f = FeedReader::read($source->url);
