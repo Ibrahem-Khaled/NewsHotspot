@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('article_contents', function (Blueprint $table) {
             $table->id();
-            $table->integer('article_id');
-            $table->string('title');
+            $table->integer('article_id')->nullable();
+            $table->text('title')->nullable();
             $table->text('description')->nullable();
-            $table->string('link')->nullable();
-            $table->string('image')->nullable();
-            $table->string('video')->nullable();
+            $table->text('link')->nullable();
+            $table->text('image')->nullable();
+            $table->text('video')->nullable();
             $table->timestamps();
         });
     }

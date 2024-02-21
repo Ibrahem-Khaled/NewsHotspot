@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\jobfolder\XmlController;
+use App\Http\Controllers\jobfolder\news_collection;
 use App\Http\Controllers\Api\GetdataFootball;
 use App\Http\Controllers\Api\SearchController;
 
@@ -22,11 +23,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/read', [XmlController::class, 'importXML']);
+Route::get('/read', [news_collection::class, 'importXML']);
 
 Route::get('/data', [GetdataFootball::class, 'GetTeamCountryIDs']);
 Route::get('/fix', [GetdataFootball::class, 'GetTeamSchedule']);
 
 //getSearch
 Route::get('get/search', [SearchController::class, 'index']);
+
+Route::get('get', [GetdataFootball::class, 'setup_teams_data']);
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('userData', [AuthController::class, 'me']);
+    // Route::post('logout', [AuthController::class, 'logout']);
+});
 

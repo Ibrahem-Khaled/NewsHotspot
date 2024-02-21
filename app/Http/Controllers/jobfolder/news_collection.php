@@ -19,8 +19,10 @@ class news_collection extends Controller
         foreach ($sources_arr as $source) {
 
             if (strpos($source->url, 'https://www.youm7.com/') !== false) {
-
-                $f = FeedReader::read($source->url);
+                
+                $url = $source->url;
+                echo ($url);
+                $f = FeedReader::read($url);
                 $pageSource = $f->getRawContent();
 
                 foreach ($pageSource->get_items(0, $pageSource->get_item_quantity()) as $item) {
@@ -38,7 +40,7 @@ class news_collection extends Controller
                         'description' => $item->get_description(),
                         'link' => $item->get_link(),
                         'image' => $item->get_permalink(),
-                        'video' => $item->get_thumbnail(),
+                        'video' => $item->get_permalink(),
                     ];
                     // Insert the data into the database
                     DB::table('article_contents')->insert($data);
