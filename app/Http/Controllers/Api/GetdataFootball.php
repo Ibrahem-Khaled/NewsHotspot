@@ -68,16 +68,14 @@ class GetdataFootball extends Controller
     }
     public function GetTeamDateHistory(Request $request)
     {
-        $contry = $request->country;
-        $team = $request->team;
-        $getTeamCountryDs = $this->GetTeamCountryIDs($contry, $team);
-
-        $teamId = $getTeamCountryDs['teamId'];
-        $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
-        $rsponeTeamHistory = Http::get($teamFIXTURES);
-        $jsonResponse = $rsponeTeamHistory->json();
-        $data = $jsonResponse["data"]['fixtures'];
-
+        $teams = Teams::all();
+        foreach ($teams as $key => $team) {
+            $id = $team->team_api_id;
+            $teamHistory = "https://livescore-api.com/api-client/scores/history.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$id";
+            $rsponeTeamHistory = Http::get($teamHistory);
+            $jsonResponse = $rsponeTeamHistory->json();
+            $data = $jsonResponse["data"]['match'];
+        }
         return response()->json($data);
     }
 
