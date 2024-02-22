@@ -31,7 +31,7 @@ Route::get('/fix', [GetdataFootball::class, 'GetTeamSchedule']);
 //getSearch
 Route::get('get/search', [SearchController::class, 'index']);
 
-Route::get('get', [GetdataFootball::class, 'setup_teams_data']);
+Route::get('get', [GetdataFootball::class, 'GetTeamDateHistory']);
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);

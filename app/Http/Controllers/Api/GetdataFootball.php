@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\TeamMatch;
 use App\Models\Teams;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -53,32 +55,69 @@ class GetdataFootball extends Controller
 
     public function GetTeamSchedule(Request $request)
     {
+        // Calculate start and end dates for next week
+        $startOfWeek = Carbon::now()->startOfWeek()->addWeek(); // Start of next week
+        $endOfWeek = Carbon::now()->endOfWeek()->addWeek(); // End of next week
 
-        $contry = $request->country;
-        $team = $request->team;
-        $getTeamCountryDs = $this->GetTeamCountryIDs($contry, $team);
+        $teams = Teams::all();
+        $nextWeekMatches = [];
 
-        $teamId = $getTeamCountryDs['teamId'];
-        $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
-        $responseFixtures = Http::get($teamFIXTURES);
-        $jsonResponse = $responseFixtures->json();
-        $data = $jsonResponse["data"]['fixtures'];
+        foreach ($teams as $team) {
+            $id = $team->team_api_id;
+            $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$id";
+            $responseFixtures = Http::get($teamFIXTURES);
+            $jsonResponse = $responseFixtures->json();
+            $data = $jsonResponse["data"]['fixtures'];
 
-        return response()->json($data);
+            foreach ($data as $match) {
+                // Parse match date
+                $matchDate = Carbon::parse($match['date']);
+
+                // Check if the match date is within next week
+                if ($matchDate->between($startOfWeek, $endOfWeek)) {
+                    $nextWeekMatches[] = [
+                        'team_id' => $id,
+                        'away_name' => $match['away_name'],
+                        'date' => $match['date'],
+                        'location' => $match['location'],
+                    ];
+                }
+            }
+        }
+
+        return response()->json($nextWeekMatches);
     }
     public function GetTeamDateHistory(Request $request)
     {
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
+
         $teams = Teams::all();
-        foreach ($teams as $key => $team) {
+        $yesterdayMatches = [];
+
+        foreach ($teams as $team) {
             $id = $team->team_api_id;
             $teamHistory = "https://livescore-api.com/api-client/scores/history.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$id";
-            $rsponeTeamHistory = Http::get($teamHistory);
-            $jsonResponse = $rsponeTeamHistory->json();
+            $responseTeamHistory = Http::get($teamHistory);
+            $jsonResponse = $responseTeamHistory->json();
             $data = $jsonResponse["data"]['match'];
-        }
-        return response()->json($data);
-    }
 
+            foreach ($data as $match) {
+                // Check if the match date is yesterday
+                if (Carbon::parse($match['date'])->format('Y-m-d') === $yesterday) {
+                    $yesterdayMatches[] = [
+                        'team_id' => $id,
+                        'old_score' => $match['ht_score'],
+                        'away_name' => $match['away_name'],
+                        'location' => $match['location'],
+                        'status' => $match['status'],
+                        'date' => $match['date'],
+                    ];
+                }
+            }
+        }
+        TeamMatch::insert($yesterdayMatches);
+        return response()->json($yesterdayMatches);
+    }
 
 
     // public function GetFlags(Request $request)
