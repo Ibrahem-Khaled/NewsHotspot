@@ -142,40 +142,47 @@ class GetdataFootball extends Controller
         $Country = $jsonResponseCountry["data"]['country'];
         $limitedCountry = array_slice($Country, 0, 5);
 
-        // for ($i = 0; $i <= 263; $i++) {
-        //     $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&page=$i";
-        //     $response = Http::get($teamsApi);
-        //     $jsonResponse = $response->json();
-        //     $data = $jsonResponse["data"]['teams'];
-        //     $limitedData = array_slice($data, 0, 5);
-        //     foreach ($limitedData as $team) {
-        //         $teamData = Teams::where('team_api_id', $team['team']['id'])->first();
-        //         if (!$teamData) {
-        //             Teams::create([
-        //                 'team_api_id' => $team['team']['id'],
-        //                 'name' => $team['team']['name'],
-        //                 'is_club' => 1,
-        //             ]);
-        //         } else {
-        //             $teamData->update([
-        //                 'team_api_id' => $team['team']['id'],
-        //                 'name' => $team['team']['name'],
-        //                 'is_club' => 1,
-        //             ]);
-        //         }
-        //     }
-        // }
+        $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&size=100&page=1";
+        $nextPage = 1;
+        do {
+            $response = Http::get($teamsApi);
+            $jsonResponse = $response->json();
+            $data = $jsonResponse["data"]['teams'];
+
+            foreach ($data as $team) {
+                $teamData = Teams::where('team_api_id', $team['team']['id'])->first();
+                if (!$teamData) {
+                    Teams::create([
+                        'team_api_id' => $team['team']['id'],
+                        'name' => $team['team']['name'],
+                        'is_club' => 1,
+                    ]);
+                } else {
+                    $teamData->update([
+                        'team_api_id' => $team['team']['id'],
+                        'name' => $team['team']['name'],
+                        'is_club' => 1,
+                    ]);
+                }
+            }
+            $nextPage = $jsonResponse['next_page'];
+            if ($nextPage !== null) {
+                ++$nextPage;
+                $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&size=100&page=$nextPage";
+            }
+        } while ($nextPage !== null);
+
+
 
         foreach ($limitedCountry as $country) {
             $countrydata = Teams::where('team_api_id', $country['id'])->first();
 
-            $id = $country['id'];
-            $flagApi = "https://livescore-api.com/api-client/countries/flag.json?country_id=71&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7";
-            $responseFlag = Http::get($flagApi);
-            $imageContent = file_get_contents($responseFlag);
-            $filename = 'image_' . uniqid() . '.jpg';
-            Storage::disk('public')->put('image/flags/' . $filename, $imageContent);
-
+            // $id = $country['id'];
+            // $flagApi = "https://livescore-api.com/api-client/countries/flag.json?country_id=71&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7";
+            // $responseFlag = Http::get($flagApi);
+            // $imageContent = file_get_contents($responseFlag);
+            // $filename = 'image_' . uniqid() . '.jpg';
+            // Storage::disk('public')->put('image/flags/' . $filename, $imageContent);
 
             if (!$countrydata) {
                 $countrys = Teams::create([
