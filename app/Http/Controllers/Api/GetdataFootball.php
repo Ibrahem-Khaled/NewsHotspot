@@ -53,13 +53,13 @@ class GetdataFootball extends Controller
         ];
     }
 
-    public function GetTeamSchedule(Request $request)
+    public function GetTeamSchedule()
     {
         // Calculate start and end dates for next week
         $startOfWeek = Carbon::now()->startOfWeek()->addWeek(); // Start of next week
         $endOfWeek = Carbon::now()->endOfWeek()->addWeek(); // End of next week
 
-        $teams = Teams::all();
+        $teams = Teams::where('is_important', 1)->get();
         $nextWeekMatches = [];
 
         foreach ($teams as $team) {
@@ -87,11 +87,12 @@ class GetdataFootball extends Controller
 
         return response()->json($nextWeekMatches);
     }
-    public function GetTeamDateHistory(Request $request)
+    public function GetTeamDateHistory()
     {
         $yesterday = Carbon::yesterday()->format('Y-m-d');
 
-        $teams = Teams::all();
+
+        $teams = Teams::where('is_important', 1)->get();
         $yesterdayMatches = [];
 
         foreach ($teams as $team) {
@@ -119,28 +120,44 @@ class GetdataFootball extends Controller
         return response()->json($yesterdayMatches);
     }
 
-
-    // public function GetFlags(Request $request)
-    // {
-    //     $flagsApi = "https://livescore-api.com/api-client/fixtures/matches.json?key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$teamId";
-    //     $responseFixtures = Http::get($flagsApi);
-    //     $jsonResponse = $responseFixtures->json();
-    //     $data = $jsonResponse["data"]['fixtures'];
-
-    //     return response()->json($data);
-    // }
-
-
-
-    public function setup_teams_data(Request $request)
+    public function GetTeamScheduleById(Request $request)
     {
+        // Calculate start and end dates for next week
+        $startOfWeek = Carbon::now()->startOfWeek()->addWeek(); // Start of next week
+        $endOfWeek = Carbon::now()->endOfWeek()->addWeek(); // End of next week
+
+        $teams = Teams::find($request->id);
+        $nextWeekMatches = [];
+
+        $id = $teams->team_api_id;
+        $teamFIXTURES = "https://livescore-api.com/api-client/fixtures/matches.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&team=$id";
+        $responseFixtures = Http::get($teamFIXTURES);
+        $jsonResponse = $responseFixtures->json();
+        $data = $jsonResponse["data"]['fixtures'];
+
+        foreach ($data as $match) {
+            // Parse match date
+            $matchDate = Carbon::parse($match['date']);
+            // Check if the match date is within next week
+            if ($matchDate->between($startOfWeek, $endOfWeek)) {
+                $nextWeekMatches[] = [
+                    'team_id' => $id,
+                    'away_name' => $match['away_name'],
+                    'date' => $match['date'],
+                    'location' => $match['location'],
+                ];
+            }
+        }
+        return response()->json($nextWeekMatches);
+    }
 
 
+    public function setup_teams_data()
+    {
         $CountryApi = "https://livescore-api.com/api-client/countries/list.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7";
         $responseCountry = Http::get($CountryApi);
         $jsonResponseCountry = $responseCountry->json();
-        $Country = $jsonResponseCountry["data"]['country'];
-        $limitedCountry = array_slice($Country, 0, 5);
+        $Countrys = $jsonResponseCountry["data"]['country'];
 
         $teamsApi = "https://livescore-api.com/api-client/teams/listing.json?&key=1JKfdLXo4XcZWuHd&secret=UvOkuPOkj5pnfaPgUAv8ltwpqIpnd6A7&size=100&page=1";
         $nextPage = 1;
@@ -172,9 +189,7 @@ class GetdataFootball extends Controller
             }
         } while ($nextPage !== null);
 
-
-
-        foreach ($limitedCountry as $country) {
+        foreach ($Countrys as $country) {
             $countrydata = Teams::where('team_api_id', $country['id'])->first();
 
             // $id = $country['id'];

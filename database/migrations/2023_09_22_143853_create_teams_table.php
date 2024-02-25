@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('team_api_id')->unique();
             $table->boolean('is_club')->default(1);
+            $table->boolean('is_important')->default(0);
             $table->string('name');
             $table->integer('sub_category_id')->nullable();
             $table->timestamps();
